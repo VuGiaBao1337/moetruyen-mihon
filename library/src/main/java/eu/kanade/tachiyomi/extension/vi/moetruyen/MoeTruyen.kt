@@ -52,31 +52,33 @@ class MoeTruyen : ParsedHttpSource() {
     )
 
     // Decrypting OkHttp Interceptor to decode IMGX secure slices automatically
-    override val client: OkHttpClient = network.client.newBuilder()
-        .addInterceptor { chain ->
-            val request = chain.request()
-            val response = chain.proceed(request)
-            val urlString = request.url.toString()
+    override val client: OkHttpClient by lazy {
+        network.client.newBuilder()
+            .addInterceptor { chain ->
+                val request = chain.request()
+                val response = chain.proceed(request)
+                val urlString = request.url.toString()
 
-            val entry = imgxGrants[urlString]
-            if (entry != null) {
-                val scrambledBytes = response.body?.bytes() ?: throw Exception("IMGX: Tải ảnh thất bại")
-                try {
-                    val decodeKey = unwrapDecodeKeyFromGrant(entry.grant, entry.storageKey)
-                    val decryptedBytes = decodeImgxWithKey(scrambledBytes, decodeKey)
+                val entry = imgxGrants[urlString]
+                if (entry != null) {
+                    val scrambledBytes = response.body?.bytes() ?: throw Exception("IMGX: Tải ảnh thất bại")
+                    try {
+                        val decodeKey = unwrapDecodeKeyFromGrant(entry.grant, entry.storageKey)
+                        val decryptedBytes = decodeImgxWithKey(scrambledBytes, decodeKey)
 
-                    val mediaType = "image/webp".toMediaTypeOrNull()
-                    val body = decryptedBytes.toResponseBody(mediaType)
-                    response.newBuilder().body(body).build()
-                } catch (e: Exception) {
-                    e.printStackTrace()
-                    throw e
+                        val mediaType = "image/webp".toMediaTypeOrNull()
+                        val body = decryptedBytes.toResponseBody(mediaType)
+                        response.newBuilder().body(body).build()
+                    } catch (e: Exception) {
+                        e.printStackTrace()
+                        throw e
+                    }
+                } else {
+                    response
                 }
-            } else {
-                response
             }
-        }
-        .build()
+            .build()
+    }
 
     override fun headersBuilder(): Headers.Builder = super.headersBuilder()
         .add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36")
