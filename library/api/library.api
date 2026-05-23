@@ -99,6 +99,16 @@ public final class eu/kanade/tachiyomi/AppInfo {
 	public final fun getVersionName ()Ljava/lang/String;
 }
 
+public final class eu/kanade/tachiyomi/extension/vi/moetruyen/MoeTruyen : eu/kanade/tachiyomi/source/online/ParsedHttpSource {
+	public fun <init> ()V
+	public fun getBaseUrl ()Ljava/lang/String;
+	public fun getLang ()Ljava/lang/String;
+	public fun getName ()Ljava/lang/String;
+	public fun getSupportsLatest ()Z
+	public synthetic fun imageUrlParse (Lorg/jsoup/nodes/Document;)Ljava/lang/String;
+}
+
+
 public final class eu/kanade/tachiyomi/network/HttpException : java/lang/IllegalStateException {
 	public fun <init> (I)V
 	public final fun getCode ()I
