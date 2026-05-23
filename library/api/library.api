@@ -108,7 +108,6 @@ public final class eu/kanade/tachiyomi/extension/vi/moetruyen/MoeTruyen : eu/kan
 	public synthetic fun imageUrlParse (Lorg/jsoup/nodes/Document;)Ljava/lang/String;
 }
 
-
 public final class eu/kanade/tachiyomi/network/HttpException : java/lang/IllegalStateException {
 	public fun <init> (I)V
 	public final fun getCode ()I
